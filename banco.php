@@ -10,7 +10,7 @@ function cadastrarCliente(&$clientes): bool {
 
     //validar cliente
     if (isset($clientes[$cpf])) {
-        print('Esse CPF já possui cadastro.\n');
+        print("Esse CPF já possui cadastro.\n");
         return false;
     }
 
@@ -49,7 +49,17 @@ function cadastrarConta(array &$clientes): bool {
 function depositar(array &$clientes){
     $cpf = readline("Informe seu CPF novamente: ");
 
+     if (!isset($clientes[$cpf])) {
+        print "Cliente não possui cadastro \n";
+        return false;
+    }
+
     $numConta = readline("Informe o número da conta:");
+
+     if (!isset($clientes[$cpf]['contas'][$numConta])) {
+        print "Número da conta inválido \n";
+        return false;
+    }
 
     $valorDeposito = (float) readline("Informe o valor do depósito: ");
 
@@ -72,11 +82,25 @@ function sacar(&$clientes){
 
     $cpf = readline("informe seu CPF:");
 
+    if (!isset($clientes[$cpf])) {
+        print "Cliente não possui cadastro \n";
+        return false;
+    }
+
 
     $conta = readline("informe o número da conta: ");
+
+    if (!isset($clientes[$cpf]['contas'][$conta])) {
+        print "Número da conta inválido \n";
+        return false;
+    }
+
     $valorSaque = readline("Informe o valor do saque:");
 
-    if ($clientes[$cpf]['contas'][$conta]['saldo'] >= $valorSaque) {
+    if ($valorSaque <= 0) {
+       print 'Saque inválido';
+    }
+    else if ($clientes[$cpf]['contas'][$conta]['saldo'] >= $valorSaque) {
         $clientes[$cpf]['contas'][$conta]['saldo'] -= $valorSaque;
         $dataHora = date('d/m/Y H:i');
         $clientes[$cpf]['contas'][$conta]['extrato'][] = "Saque de R$ $valorSaque em $dataHora";
@@ -89,11 +113,21 @@ function sacar(&$clientes){
 }
 function consultarSaldo($clientes){
     $cpf = readline("informe seu CPF:");
+
+    if (!isset($clientes[$cpf])) {
+        print "Cliente não possui cadastro \n";
+        return false;
+    }
     
     $conta = readline("informe o número da conta: ");
 
+    if (!isset($clientes[$cpf]['contas'][$conta])) {
+        print "Número da conta inválido \n";
+        return false;
+    }
+
     print "============= Saldo ===================\n";
-    print $clientes[$cpf]['contas'][$conta]['saldo'];
+    print "           R$" . $clientes[$cpf]['contas'][$conta]['saldo'] . "           ";
     print "\n=======================================\n";
     
     
